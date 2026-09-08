@@ -10,9 +10,19 @@ It is a separate process. It does not modify the game, inject DLLs, read memory,
 
 ![Mixer running next to Forza](docs/media/mixer.gif)
 
-## Download
+## Download (normal use)
 
-Get the latest Windows build from [Releases](https://github.com/aravindraju98/Forza-Telemetry-Haptics/releases). Unzip and run `ForzaTelemetryHaptics.exe`, or use `run.bat` if you have the .NET 8 SDK.
+You do not need Visual Studio or the .NET SDK. Use the release build:
+
+1. Open [Releases](https://github.com/aravindraju98/Forza-Telemetry-Haptics/releases).
+2. Download `ForzaTelemetryHaptics-win-x64.zip` from the latest release.
+3. Unzip it anywhere.
+4. Run `ForzaTelemetryHaptics.exe`.
+5. Turn on Forza Data Out (steps below) and plug in an XInput pad.
+
+Windows may warn on an unsigned exe the first time. That is expected for a small third-party build. Choose **More info → Run anyway** if SmartScreen blocks it.
+
+Only build from source if you want to change the code.
 
 ## What it does
 
@@ -38,7 +48,7 @@ A global **MAX RUMBLE** cap keeps the pad from locking at full strength.
 - Windows 10 or 11
 - Forza Horizon 6 with Data Out on (Horizon titles that send the same 324-byte packet also work)
 - Any Windows **XInput** pad with rumble (Xbox, 8BitDo in XInput mode, and similar)
-- .NET 8 SDK only if you build from source
+- .NET 8 SDK only if you build from source — not needed for the release zip
 
 ## Forza Data Out
 
@@ -96,7 +106,9 @@ Useful `config.json` keys:
 | `Haptics.*Enabled` | Per-layer on/off |
 | `Haptics.TelemetryTimeoutMs` | Fade after lost packets |
 
-## Build
+## Build from source
+
+Skip this if you already downloaded the release zip.
 
 ```powershell
 dotnet restore ForzaTelemetryHaptics.sln
@@ -108,7 +120,7 @@ dotnet test ForzaTelemetryHaptics.sln -c Release
 dotnet run --project src/ForzaTelemetryHaptics.App -c Release
 ```
 
-Or `run.bat`. Standalone exe:
+Or `run.bat`. To make your own standalone exe:
 
 ```powershell
 .\scripts\publish.ps1
