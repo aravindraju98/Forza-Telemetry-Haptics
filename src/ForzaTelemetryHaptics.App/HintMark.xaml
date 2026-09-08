@@ -19,7 +19,7 @@
             BorderThickness="1"
             Background="Transparent">
         <TextBlock x:Name="Mark"
-                   Text="!"
+                   Text="?"
                    FontSize="8"
                    FontWeight="SemiBold"
                    Foreground="#8A8880"
