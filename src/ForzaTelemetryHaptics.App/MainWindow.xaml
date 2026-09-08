@@ -368,14 +368,15 @@
                                             </StackPanel>
                                             <Slider x:Name="EngineThrottleSlider" Minimum="0" Maximum="1" Value="0.72" ValueChanged="Curve_Changed"/>
                                         </StackPanel>
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock x:Name="LblBoostGain" Style="{StaticResource Label}" Text="Boost extra"/>
-                                                <local:HintMark Tip="Extra right-motor layer while boost is active."/>
-                                            </StackPanel>
-                                            <Slider x:Name="BoostGainSlider" Minimum="0" Maximum="0.5" Value="0.35" ValueChanged="Curve_Changed"/>
-                                        </StackPanel>
                                     </UniformGrid>
+                                </StackPanel>
+                                <StackPanel x:Name="PanelBoost" Visibility="Collapsed">
+                                    <TextBlock Style="{StaticResource Eyebrow}" Text="BOOST"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock x:Name="LblBoostGain" Style="{StaticResource Label}" Text="Gain"/>
+                                        <local:HintMark Tip="Extra right-motor layer from turbo boost. Independent of engine RPM rumble."/>
+                                    </StackPanel>
+                                    <Slider x:Name="BoostGainSlider" Minimum="0" Maximum="0.5" Value="0.35" ValueChanged="Curve_Changed"/>
                                 </StackPanel>
                                 <StackPanel x:Name="PanelRoad" Visibility="Collapsed">
                                     <TextBlock Style="{StaticResource Eyebrow}" Text="ROAD"/>

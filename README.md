@@ -30,7 +30,7 @@ On by default. When the app starts it checks GitHub Releases. If a newer zip is 
 While you drive, the pad keeps a low baseline and changes with the car:
 
 - Engine RPM (quieter off-throttle, more texture at redline)
-- Turbo boost extra on the right motor
+- Turbo boost extra on the right motor (own curve and gain)
 - Road, surface, rumble strips, and puddles, panned per side
 - Tire slip and wheelspin
 - Drift after a start threshold

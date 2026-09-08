@@ -18,8 +18,9 @@ public sealed class BoostEffect : IHapticEffect
             return new HapticSignal(quiet * 0.85f, quiet);
         }
 
+        var shaped = settings.BoostCurve.Evaluate(telemetry.NormalizedBoost);
         var intensity = _filter.Update(
-            telemetry.NormalizedBoost * settings.BoostGain,
+            shaped * settings.BoostGain,
             settings.SmoothingSeconds,
             deltaSeconds);
         return new HapticSignal(intensity * 0.85f, intensity);

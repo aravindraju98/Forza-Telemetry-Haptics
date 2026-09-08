@@ -9,7 +9,7 @@
     <RootNamespace>ForzaTelemetryHaptics.App</RootNamespace>
     <AssemblyName>ForzaTelemetryHaptics</AssemblyName>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Description>Telemetry-driven haptic feedback for Forza Horizon 6 using XInput rumble.</Description>
   </PropertyGroup>
   <ItemGroup>

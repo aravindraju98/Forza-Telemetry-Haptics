@@ -71,6 +71,7 @@ public sealed class ConfigManager
         config.Haptics ??= new HapticSettings();
         var defaults = new HapticSettings();
         config.Haptics.EngineCurve = ResponseCurve.Ensure(config.Haptics.EngineCurve, defaults.EngineCurve);
+        config.Haptics.BoostCurve = ResponseCurve.Ensure(config.Haptics.BoostCurve, defaults.BoostCurve);
         config.Haptics.RoadCurve = ResponseCurve.Ensure(config.Haptics.RoadCurve, defaults.RoadCurve);
         config.Haptics.SlipCurve = ResponseCurve.Ensure(config.Haptics.SlipCurve, defaults.SlipCurve);
         config.Haptics.DriftCurve = ResponseCurve.Ensure(config.Haptics.DriftCurve, defaults.DriftCurve);

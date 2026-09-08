@@ -329,7 +329,7 @@ public partial class MainWindow : Window
         LblEngineModHz.Text = $"Idle texture  {h.EngineModulationHz:0} Hz";
         LblEngineRedlineHz.Text = $"Redline texture  {h.EngineRedlineModHz:0} Hz";
         LblEngineThrottle.Text = $"Throttle blend  {h.EngineThrottleBlend * 100:0}";
-        LblBoostGain.Text = $"Boost  {h.BoostGain * 100:0}";
+        LblBoostGain.Text = $"Gain  {h.BoostGain * 100:0}";
         LblRoadGain.Text = $"Speed  {h.RoadGain * 100:0}";
         LblRoadSurface.Text = $"Surface  {h.RoadSurfaceGain * 100:0}";
         LblRoadStrip.Text = $"Rumble strip  {h.RoadRumbleStripGain * 100:0}";
@@ -438,7 +438,7 @@ public partial class MainWindow : Window
             "Impact" => "Impact size",
             "G-force" => "G-force",
             "Handbrake" => "Drift amount",
-            "Boost" => "RPM (idle → redline)",
+            "Boost" => "Boost pressure",
             _ => "RPM (idle → redline)"
         };
         CurveHelp.Text = $"{aspect}: {FanCurve.AxisX} → rumble";
@@ -447,7 +447,8 @@ public partial class MainWindow : Window
 
     private void ShowSelectedSliders(string aspect)
     {
-        PanelEngine.Visibility = aspect is "Engine" or "Boost" ? Visibility.Visible : Visibility.Collapsed;
+        PanelEngine.Visibility = aspect == "Engine" ? Visibility.Visible : Visibility.Collapsed;
+        PanelBoost.Visibility = aspect == "Boost" ? Visibility.Visible : Visibility.Collapsed;
         PanelRoad.Visibility = aspect == "Road" ? Visibility.Visible : Visibility.Collapsed;
         PanelSlip.Visibility = aspect == "Slip" ? Visibility.Visible : Visibility.Collapsed;
         PanelDrift.Visibility = aspect is "Drift" or "Handbrake" ? Visibility.Visible : Visibility.Collapsed;
@@ -471,6 +472,7 @@ public partial class MainWindow : Window
             "Gear" => hap.GearShift > 0.05f ? 0.7f : 0f,
             "Impact" => car.ImpactMagnitude,
             "G-force" => Math.Clamp(Math.Max(Math.Abs(car.AccelLateral), Math.Abs(car.AccelLongitudinal)) / 16f, 0f, 1f),
+            "Boost" => car.NormalizedBoost,
             _ => car.NormalizedRpm
         };
         FanCurve.SetLiveInput(x);

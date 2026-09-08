@@ -70,6 +70,7 @@ public sealed class HapticSettings
     public float GForceGain { get; set; } = 0.10f;
 
     public ResponseCurve EngineCurve { get; set; } = ResponseCurve.Power(1.6f);
+    public ResponseCurve BoostCurve { get; set; } = ResponseCurve.Linear();
     public ResponseCurve RoadCurve { get; set; } = ResponseCurve.Power(0.75f);
     public ResponseCurve SlipCurve { get; set; } = ResponseCurve.FromPoints(
         new(0f, 0f), new(0.4403f, 0.3982f), new(1f, 1f));
@@ -94,6 +95,7 @@ public sealed class HapticSettings
         "Gear" => GearCurve,
         "Impact" => ImpactCurve,
         "G-force" => GForceCurve,
+        "Boost" => BoostCurve,
         "Handbrake" => DriftCurve,
         _ => EngineCurve
     };
@@ -143,6 +145,7 @@ public sealed class HapticSettings
             case "Gear": GearCurve = curve; break;
             case "Impact": ImpactCurve = curve; break;
             case "G-force": GForceCurve = curve; break;
+            case "Boost": BoostCurve = curve; break;
             case "Handbrake": DriftCurve = curve; break;
             default: EngineCurve = curve; break;
         }
@@ -152,6 +155,7 @@ public sealed class HapticSettings
     {
         var copy = (HapticSettings)MemberwiseClone();
         copy.EngineCurve = EngineCurve.Clone();
+        copy.BoostCurve = BoostCurve.Clone();
         copy.RoadCurve = RoadCurve.Clone();
         copy.SlipCurve = SlipCurve.Clone();
         copy.DriftCurve = DriftCurve.Clone();

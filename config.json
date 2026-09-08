@@ -67,6 +67,12 @@
         { "X": 1, "Y": 1 }
       ]
     },
+    "BoostCurve": {
+      "Points": [
+        { "X": 0, "Y": 0 },
+        { "X": 1, "Y": 1 }
+      ]
+    },
     "RoadCurve": {
       "Points": [
         { "X": 0, "Y": 0 },

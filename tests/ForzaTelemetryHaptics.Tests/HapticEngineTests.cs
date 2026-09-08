@@ -184,6 +184,21 @@ public class HapticEngineTests
     }
 
     [Fact]
+    public void Boost_UsesItsOwnCurveIndependentOfEngine()
+    {
+        var settings = new HapticSettings
+        {
+            BoostGain = 1f,
+            BoostCurve = ResponseCurve.FromPoints(new(0f, 0f), new(1f, 0f))
+        };
+        var mutedBoost = new BoostEffect().Update(Driving(rpm: 4000, boost: 12f), settings, 0.05f);
+        var engine = new EngineEffect().Update(Driving(rpm: 4000, boost: 12f), settings, 0.05f);
+        Assert.True(mutedBoost.Peak < 0.02f);
+        Assert.True(engine.Peak > 0.02f);
+        Assert.NotSame(settings.CurveFor("Boost"), settings.CurveFor("Engine"));
+    }
+
+    [Fact]
     public void Road_PansTowardTheSideWithSurfaceAndPuddle()
     {
         var effect = new RoadEffect();
