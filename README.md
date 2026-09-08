@@ -2,11 +2,11 @@
 
 <img src="docs/media/icon.png" width="72" alt="Telemetry Haptics icon">
 
-Independent Windows app that turns Forza Horizon 6 **Data Out** UDP into layered XInput rumble. Built for the **8BitDo Ultimate 2C Wired**. Any XInput rumble pad works.
+Independent Windows app that turns Forza Horizon 6 **Data Out** UDP into layered **XInput** rumble. Any Xbox-style pad with two grip motors will work — Xbox, 8BitDo in XInput mode, and other third-party XInput controllers.
 
 It is a separate process. It does not modify the game, inject DLLs, read memory, or automate play.
 
-**Not affiliated with Microsoft, Xbox, Playground Games, Forza, or 8BitDo.**
+**Not affiliated with Microsoft, Xbox, Playground Games, Forza, or any controller maker.**
 
 ![Mixer running next to Forza](docs/media/mixer.gif)
 
@@ -29,7 +29,7 @@ While you drive, the pad keeps a low baseline and changes with the car:
 - Impacts and suspension thuds
 - Optional G-force
 
-Each layer has **Off | On**. Hover **?** for a short tip. Drag the curve like a fan graph. **LEFT MOTOR** ducks the heavier XInput motor so a centered mix does not feel left-heavy on the 2C.
+Each layer has **Off | On**. Hover **?** for a short tip. Drag the curve like a fan graph. **LEFT MOTOR** ducks the heavier grip motor that most XInput pads use on the left.
 
 A global **MAX RUMBLE** cap keeps the pad from locking at full strength.
 
@@ -37,7 +37,7 @@ A global **MAX RUMBLE** cap keeps the pad from locking at full strength.
 
 - Windows 10 or 11
 - Forza Horizon 6 with Data Out on (Horizon titles that send the same 324-byte packet also work)
-- 8BitDo Ultimate 2C Wired, or any XInput pad with rumble, over USB
+- Any Windows **XInput** pad with rumble (Xbox, 8BitDo in XInput mode, and similar)
 - .NET 8 SDK only if you build from source
 
 ## Forza Data Out
@@ -55,15 +55,25 @@ Field list: [docs/TELEMETRY.md](docs/TELEMETRY.md).
 
 ## Controller
 
-1. Plug the 2C in over USB.
-2. Use **XInput / Windows** mode.
-3. 8BitDo Ultimate Software is not required.
+Plug in any pad Windows treats as an Xbox controller. Use **XInput / Windows** mode if the pad has a switch. Maker apps (8BitDo Ultimate Software, and so on) are not required.
 
-Use **Left**, **Right**, **Both**, and **Stop** to test motors before you drive.
+Use **Left**, **Right**, **Both**, and **Stop** to confirm rumble before you drive.
 
-The left grip motor is physically stronger. **LEFT MOTOR** in the footer (default 85%) trims that so equal mix values feel closer in the hands.
+These work:
 
-Other Xbox-style XInput pads work. DInput, Switch, PlayStation, and no-rumble pads do not, unless something presents them as XInput.
+- Xbox wired and wireless
+- 8BitDo and other third-party pads in **XInput** mode
+- Any Xbox-layout pad with two grip motors that shows up as XInput
+
+These do not, unless Steam Input or a driver presents them as XInput:
+
+- Switch / DInput / Android / PlayStation modes
+- DualSense / DualShock
+- Pads with no rumble motors
+
+Impulse triggers (Elite and similar) are not driven. This app only uses the two grip motors.
+
+Most XInput pads have a heavier left motor. **LEFT MOTOR** in the footer (default 85%) trims that so a centered mix feels even. Set it to 100% if you want the raw left punch.
 
 ## Tune
 
@@ -110,7 +120,7 @@ That writes `publish\ForzaTelemetryHaptics.exe`.
 
 - Packet rate stays 0: Data Out is off, IP/port mismatch, or you are in a menu.
 - Parser only accepts **324-byte** Horizon packets.
-- Test buttons silent: Windows is not exposing rumble. This app does not talk 8BitDo firmware.
+- Test buttons silent: Windows is not exposing XInput rumble. Check the pad is in XInput mode and that rumble works in another game.
 - Two pads: first XInput slot (index 0), or set `ControllerIndex` in `config.json`.
 
 How the mixer is put together: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
