@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+initial plan.md
+ForzaTelemetryHaptics-win-x64*.zip
+*.user
+*.suo
+publish/
+TestResults/
+*.log

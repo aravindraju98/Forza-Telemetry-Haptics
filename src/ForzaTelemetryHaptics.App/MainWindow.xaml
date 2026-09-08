@@ -1,0 +1,551 @@
+<Window x:Class="ForzaTelemetryHaptics.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ForzaTelemetryHaptics.App"
+        Title="Telemetry Haptics"
+        Width="1180" Height="820"
+        MinWidth="920" MinHeight="640"
+        Background="{StaticResource Bg}"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel Margin="20">
+        <Border DockPanel.Dock="Top" BorderBrush="{StaticResource Line}" BorderThickness="0,0,0,1" Padding="0,0,0,14" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource Muted}" Text="FORZA HORIZON 6"/>
+                    <TextBlock FontSize="18" FontWeight="SemiBold" Text="Telemetry Haptics"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="TelLink" Style="{StaticResource Value}" HorizontalAlignment="Left" Foreground="{StaticResource Muted}" Text="WAIT"/>
+                        <TextBlock Margin="12,0,0,0" Style="{StaticResource Value}" HorizontalAlignment="Left" x:Name="TelRate" Text="0 Hz"/>
+                    </StackPanel>
+                    <TextBlock x:Name="PadStatus" Style="{StaticResource Meta}" Margin="0,4,0,0" Text="No controller"/>
+                </StackPanel>
+                <DockPanel Grid.Column="4" VerticalAlignment="Center" LastChildFill="False">
+                    <Button DockPanel.Dock="Right" Content="Apply" Click="RestartTelemetry_Click" Margin="0"/>
+                    <TextBox x:Name="PortBox" Width="72" DockPanel.Dock="Right"/>
+                    <TextBox x:Name="BindAddressBox" Width="128" DockPanel.Dock="Right"/>
+                    <local:HintMark DockPanel.Dock="Right" Margin="0,0,8,0" Tip="IPv4 and port Forza Data Out should send to. Click Apply after changing."/>
+                    <TextBlock x:Name="BindStatusText" Style="{StaticResource Meta}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                </DockPanel>
+            </Grid>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom" BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0" Padding="0,14,0,0" Margin="0,16,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.1*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <TextBlock Style="{StaticResource Eyebrow}" Margin="0" Text="PROFILE"/>
+                        <local:HintMark Tip="Saved mix, curves, and layer switches. Load one or type a name and Save."/>
+                    </StackPanel>
+                    <DockPanel LastChildFill="True">
+                        <Button DockPanel.Dock="Right" Content="Save" Click="SaveProfile_Click" Margin="0"/>
+                        <Button DockPanel.Dock="Right" Content="Load" Click="LoadProfile_Click"/>
+                        <ComboBox x:Name="ProfileBox" Margin="0,0,8,0"/>
+                    </DockPanel>
+                    <TextBox x:Name="NewProfileName" Text="Custom" Margin="0,8,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <DockPanel>
+                        <TextBlock x:Name="MaxRumbleText" Style="{StaticResource Value}" DockPanel.Dock="Right" Text="35%"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource Eyebrow}" Text="MAX RUMBLE" Margin="0"/>
+                            <local:HintMark Tip="Hard cap on both motors. Safety limit so the pad cannot run at full strength."/>
+                        </StackPanel>
+                    </DockPanel>
+                    <Slider x:Name="MaxRumbleSlider" Minimum="0.05" Maximum="1.0" Value="0.35" Margin="0,6,0,0" ValueChanged="MaxRumble_Changed"/>
+                </StackPanel>
+                <StackPanel Grid.Column="4">
+                    <DockPanel>
+                        <TextBlock x:Name="GlobalGainText" Style="{StaticResource Value}" DockPanel.Dock="Right" Text="100%"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource Eyebrow}" Text="GAIN" Margin="0"/>
+                            <local:HintMark Tip="Overall mix level before the cap. Turn this down if every layer feels too loud."/>
+                        </StackPanel>
+                    </DockPanel>
+                    <Slider x:Name="GlobalGainSlider" Minimum="0" Maximum="1.5" Value="1.0" Margin="0,6,0,0" ValueChanged="GlobalGain_Changed"/>
+                </StackPanel>
+                <StackPanel Grid.Column="6">
+                    <DockPanel>
+                        <TextBlock x:Name="LeftMotorScaleText" Style="{StaticResource Value}" DockPanel.Dock="Right" Text="85%"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource Eyebrow}" Text="LEFT MOTOR" Margin="0"/>
+                            <local:HintMark Tip="Ducks the heavier left motor. XInput pads like the 8BitDo 2C hit harder on the left for the same value."/>
+                        </StackPanel>
+                    </DockPanel>
+                    <Slider x:Name="LeftMotorScaleSlider" Minimum="0.55" Maximum="1.0" Value="0.85" Margin="0,6,0,0" ValueChanged="LeftMotorScale_Changed"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Style="{StaticResource PanelBorder}" Margin="0">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource Eyebrow}" Text="MIX"/>
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Meta}" Text="RPM"/>
+                            <TextBlock x:Name="TelRpm" Style="{StaticResource Value}" HorizontalAlignment="Left" Text="—"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Style="{StaticResource Meta}" Text="KM/H"/>
+                            <TextBlock x:Name="TelSpeed" Style="{StaticResource Value}" HorizontalAlignment="Left" Text="—"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Style="{StaticResource Meta}" Text="GEAR"/>
+                            <TextBlock x:Name="TelGear" Style="{StaticResource Value}" HorizontalAlignment="Left" Text="—"/>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock x:Name="TelError" DockPanel.Dock="Bottom" Foreground="{StaticResource Warn}" TextWrapping="Wrap" Margin="0,8,0,0" Visibility="Collapsed"/>
+                    <TextBlock x:Name="PadError" DockPanel.Dock="Bottom" Foreground="{StaticResource Bad}" TextWrapping="Wrap" Margin="0,8,0,0" Visibility="Collapsed"/>
+                    <StackPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+                        <DockPanel Margin="0,0,0,4">
+                            <TextBlock x:Name="HapLeft" Style="{StaticResource Value}" DockPanel.Dock="Right" Text="0.0"/>
+                            <TextBlock Style="{StaticResource Meta}" Text="LEFT"/>
+                        </DockPanel>
+                        <ProgressBar x:Name="BarLeft" Style="{StaticResource MotorBar}" Margin="0,0,0,10"/>
+                        <DockPanel Margin="0,0,0,4">
+                            <TextBlock x:Name="HapRight" Style="{StaticResource Value}" DockPanel.Dock="Right" Text="0.0"/>
+                            <TextBlock Style="{StaticResource Meta}" Text="RIGHT"/>
+                        </DockPanel>
+                        <ProgressBar x:Name="BarRight" Style="{StaticResource MotorBar}" Margin="0,0,0,10"/>
+                        <UniformGrid Columns="2">
+                            <Button Content="Left" Click="TestLeft_Click" Margin="0,0,6,6"/>
+                            <Button Content="Right" Click="TestRight_Click" Margin="0,0,0,6"/>
+                            <Button Content="Both" Click="TestBoth_Click" Margin="0,0,6,0"/>
+                            <Button Content="Stop" Click="StopRumble_Click" Margin="0"/>
+                        </UniformGrid>
+                    </StackPanel>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="72"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="28"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="22"/><RowDefinition Height="22"/><RowDefinition Height="22"/>
+                                <RowDefinition Height="22"/><RowDefinition Height="22"/><RowDefinition Height="22"/>
+                                <RowDefinition Height="22"/><RowDefinition Height="22"/><RowDefinition Height="22"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Style="{StaticResource Meta}" Text="Engine"/>
+                            <ProgressBar Grid.Column="1" x:Name="BarEngine" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Grid.Column="2" x:Name="HapEngine" Style="{StaticResource Value}" Text="0"/>
+                            <TextBlock Grid.Row="1" Style="{StaticResource Meta}" Text="Boost"/>
+                            <ProgressBar Grid.Row="1" Grid.Column="1" x:Name="BarBoost" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="2" x:Name="HapBoost" Style="{StaticResource Value}" Text="0"/>
+                            <TextBlock Grid.Row="2" Style="{StaticResource Meta}" Text="Road"/>
+                            <ProgressBar Grid.Row="2" Grid.Column="1" x:Name="BarRoad" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Grid.Row="2" Grid.Column="2" x:Name="HapRoad" Style="{StaticResource Value}" Text="0"/>
+                            <TextBlock Grid.Row="3" Style="{StaticResource Meta}" Text="Slip"/>
+                            <ProgressBar Grid.Row="3" Grid.Column="1" x:Name="BarSlip" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Grid.Row="3" Grid.Column="2" x:Name="HapSlip" Style="{StaticResource Value}" Text="0"/>
+                            <TextBlock Grid.Row="4" Style="{StaticResource Meta}" Text="ABS"/>
+                            <ProgressBar Grid.Row="4" Grid.Column="1" x:Name="BarAbs" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Grid.Row="4" Grid.Column="2" x:Name="HapAbs" Style="{StaticResource Value}" Text="0"/>
+                            <TextBlock Grid.Row="5" Style="{StaticResource Meta}" Text="Traction"/>
+                            <ProgressBar Grid.Row="5" Grid.Column="1" x:Name="BarTraction" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Grid.Row="5" Grid.Column="2" x:Name="HapTraction" Style="{StaticResource Value}" Text="0"/>
+                            <TextBlock Grid.Row="6" Style="{StaticResource Meta}" Text="H-brake"/>
+                            <ProgressBar Grid.Row="6" Grid.Column="1" x:Name="BarHandbrake" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Grid.Row="6" Grid.Column="2" x:Name="HapHandbrake" Style="{StaticResource Value}" Text="0"/>
+                            <TextBlock Grid.Row="7" Style="{StaticResource Meta}" Text="Gear"/>
+                            <ProgressBar Grid.Row="7" Grid.Column="1" x:Name="BarGear" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Grid.Row="7" Grid.Column="2" x:Name="HapGear" Style="{StaticResource Value}" Text="0"/>
+                            <TextBlock Grid.Row="8" Style="{StaticResource Meta}" Text="Impact"/>
+                            <ProgressBar Grid.Row="8" Grid.Column="1" x:Name="BarImpact" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Grid.Row="8" Grid.Column="2" x:Name="HapImpact" Style="{StaticResource Value}" Text="0"/>
+                        </Grid>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Column="2" Style="{StaticResource PanelBorder}" Margin="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="210"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Style="{StaticResource Eyebrow}" Text="LAYER"/>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <Border x:Name="RowEngine" Style="{StaticResource LayerRow}" Tag="Engine" MouseLeftButtonUp="LayerRow_Click">
+                                    <DockPanel>
+                                        <CheckBox DockPanel.Dock="Right" Style="{StaticResource OnOffSwitch}" x:Name="EngineEnabledBox" Tag="Engine" IsChecked="True" Checked="LayerToggle_Changed" Unchecked="LayerToggle_Changed"/>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="LblLayerEngine" Text="Engine" VerticalAlignment="Center" FontSize="12"/>
+                                            <local:HintMark Tip="RPM and throttle rumble in the grips. The heavier left motor carries most of the body."/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                                <Border x:Name="RowBoost" Style="{StaticResource LayerRow}" Tag="Boost" MouseLeftButtonUp="LayerRow_Click">
+                                    <DockPanel>
+                                        <CheckBox DockPanel.Dock="Right" Style="{StaticResource OnOffSwitch}" x:Name="BoostEnabledBox" Tag="Boost" IsChecked="True" Checked="LayerToggle_Changed" Unchecked="LayerToggle_Changed"/>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="LblLayerBoost" Text="Boost" VerticalAlignment="Center" FontSize="12"/>
+                                            <local:HintMark Tip="Extra right-motor buzz while turbo boost is on."/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                                <Border x:Name="RowRoad" Style="{StaticResource LayerRow}" Tag="Road" MouseLeftButtonUp="LayerRow_Click">
+                                    <DockPanel>
+                                        <CheckBox DockPanel.Dock="Right" Style="{StaticResource OnOffSwitch}" x:Name="RoadEnabledBox" Tag="Road" IsChecked="True" Checked="LayerToggle_Changed" Unchecked="LayerToggle_Changed"/>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="LblLayerRoad" Text="Road" VerticalAlignment="Center" FontSize="12"/>
+                                            <local:HintMark Tip="Speed, surface, rumble strips, and puddles. Pans to the side that is rough or wet."/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                                <Border x:Name="RowSlip" Style="{StaticResource LayerRow}" Tag="Slip" MouseLeftButtonUp="LayerRow_Click">
+                                    <DockPanel>
+                                        <CheckBox DockPanel.Dock="Right" Style="{StaticResource OnOffSwitch}" x:Name="SlipEnabledBox" Tag="Slip" IsChecked="True" Checked="LayerToggle_Changed" Unchecked="LayerToggle_Changed"/>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="LblLayerSlip" Text="Slip" VerticalAlignment="Center" FontSize="12"/>
+                                            <local:HintMark Tip="Tire slip and wheelspin, panned toward the sliding wheels."/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                                <Border x:Name="RowDrift" Style="{StaticResource LayerRow}" Tag="Drift" MouseLeftButtonUp="LayerRow_Click">
+                                    <DockPanel>
+                                        <CheckBox DockPanel.Dock="Right" Style="{StaticResource OnOffSwitch}" x:Name="DriftEnabledBox" Tag="Drift" IsChecked="True" Checked="LayerToggle_Changed" Unchecked="LayerToggle_Changed"/>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="LblLayerDrift" Text="Drift" VerticalAlignment="Center" FontSize="12"/>
+                                            <local:HintMark Tip="Rear-slip rumble after you pass the start threshold."/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                                <Border x:Name="RowAbs" Style="{StaticResource LayerRow}" Tag="ABS" MouseLeftButtonUp="LayerRow_Click">
+                                    <DockPanel>
+                                        <CheckBox DockPanel.Dock="Right" Style="{StaticResource OnOffSwitch}" x:Name="AbsEnabledBox" Tag="ABS" IsChecked="True" Checked="LayerToggle_Changed" Unchecked="LayerToggle_Changed"/>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="LblLayerAbs" Text="ABS" VerticalAlignment="Center" FontSize="12"/>
+                                            <local:HintMark Tip="Ticking pulse while ABS is working the brakes."/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                                <Border x:Name="RowTraction" Style="{StaticResource LayerRow}" Tag="Traction" MouseLeftButtonUp="LayerRow_Click">
+                                    <DockPanel>
+                                        <CheckBox DockPanel.Dock="Right" Style="{StaticResource OnOffSwitch}" x:Name="TractionEnabledBox" Tag="Traction" IsChecked="True" Checked="LayerToggle_Changed" Unchecked="LayerToggle_Changed"/>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="LblLayerTraction" Text="Traction" VerticalAlignment="Center" FontSize="12"/>
+                                            <local:HintMark Tip="Ticking pulse while traction control is cutting power."/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                                <Border x:Name="RowHandbrake" Style="{StaticResource LayerRow}" Tag="Handbrake" MouseLeftButtonUp="LayerRow_Click">
+                                    <DockPanel>
+                                        <CheckBox DockPanel.Dock="Right" Style="{StaticResource OnOffSwitch}" x:Name="HandbrakeEnabledBox" Tag="Handbrake" IsChecked="True" Checked="LayerToggle_Changed" Unchecked="LayerToggle_Changed"/>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="LblLayerHandbrake" Text="Handbrake" VerticalAlignment="Center" FontSize="12"/>
+                                            <local:HintMark Tip="Grab rumble that scales with speed. Quiet when you are nearly stopped."/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                                <Border x:Name="RowGear" Style="{StaticResource LayerRow}" Tag="Gear" MouseLeftButtonUp="LayerRow_Click">
+                                    <DockPanel>
+                                        <CheckBox DockPanel.Dock="Right" Style="{StaticResource OnOffSwitch}" x:Name="GearEnabledBox" Tag="Gear" IsChecked="True" Checked="LayerToggle_Changed" Unchecked="LayerToggle_Changed"/>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="LblLayerGear" Text="Gear" VerticalAlignment="Center" FontSize="12"/>
+                                            <local:HintMark Tip="Short kick on each upshift or downshift."/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                                <Border x:Name="RowImpact" Style="{StaticResource LayerRow}" Tag="Impact" MouseLeftButtonUp="LayerRow_Click">
+                                    <DockPanel>
+                                        <CheckBox DockPanel.Dock="Right" Style="{StaticResource OnOffSwitch}" x:Name="ImpactEnabledBox" Tag="Impact" IsChecked="True" Checked="LayerToggle_Changed" Unchecked="LayerToggle_Changed"/>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="LblLayerImpact" Text="Impact" VerticalAlignment="Center" FontSize="12"/>
+                                            <local:HintMark Tip="Collisions and suspension thuds. Can duck the other layers while it hits."/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                                <Border x:Name="RowGForce" Style="{StaticResource LayerRow}" Tag="G-force" MouseLeftButtonUp="LayerRow_Click">
+                                    <DockPanel>
+                                        <CheckBox DockPanel.Dock="Right" Style="{StaticResource OnOffSwitch}" x:Name="GForceEnabledBox" Tag="G-force" IsChecked="True" Checked="LayerToggle_Changed" Unchecked="LayerToggle_Changed"/>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="LblLayerGForce" Text="G-force" VerticalAlignment="Center" FontSize="12"/>
+                                            <local:HintMark Tip="Brake, throttle, and lateral load in the body of the pad."/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DockPanel>
+                    <DockPanel Grid.Column="2">
+                        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                            <Button DockPanel.Dock="Right" Content="Reset curve" Click="ResetCurve_Click" Margin="0"/>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock x:Name="CurveHelp" Style="{StaticResource Meta}" VerticalAlignment="Center" Text="Engine: RPM → rumble"/>
+                                <local:HintMark Tip="Drag points to shape how this layer turns input into rumble. Right-click a point to delete it. Click the curve to add one."/>
+                            </StackPanel>
+                        </DockPanel>
+                        <local:CurveEditor x:Name="FanCurve" DockPanel.Dock="Top" Height="300" Margin="0,0,0,16"/>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <Grid>
+                                <StackPanel x:Name="PanelEngine">
+                                    <TextBlock Style="{StaticResource Eyebrow}" Text="ENGINE"/>
+                                    <UniformGrid Columns="2">
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblEngineBase" Style="{StaticResource Label}" Text="Idle base"/>
+                                                <local:HintMark Tip="Constant idle shake while the engine is running."/>
+                                            </StackPanel>
+                                            <Slider x:Name="EngineBaseSlider" Minimum="0" Maximum="0.12" Value="0.03" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblEngineGain" Style="{StaticResource Label}" Text="RPM gain"/>
+                                                <local:HintMark Tip="How hard rumble grows from idle toward redline."/>
+                                            </StackPanel>
+                                            <Slider x:Name="EngineGainSlider" Minimum="0" Maximum="0.6" Value="0.22" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblEngineExponent" Style="{StaticResource Label}" Text="RPM curve"/>
+                                                <local:HintMark Tip="Shape of the RPM climb. Higher stays quieter longer, then rises late."/>
+                                            </StackPanel>
+                                            <Slider x:Name="EngineExponentSlider" Minimum="0.4" Maximum="3.0" Value="1.6" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblEngineMod" Style="{StaticResource Label}" Text="Texture"/>
+                                                <local:HintMark Tip="How much the engine buzz pulses instead of staying a flat shake."/>
+                                            </StackPanel>
+                                            <Slider x:Name="EngineModSlider" Minimum="0" Maximum="0.5" Value="0.18" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblEngineModHz" Style="{StaticResource Label}" Text="Idle texture"/>
+                                                <local:HintMark Tip="Pulse speed of that texture at idle."/>
+                                            </StackPanel>
+                                            <Slider x:Name="EngineModHzSlider" Minimum="4" Maximum="30" Value="12" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblEngineRedlineHz" Style="{StaticResource Label}" Text="Redline texture"/>
+                                                <local:HintMark Tip="Pulse speed of that texture at redline."/>
+                                            </StackPanel>
+                                            <Slider x:Name="EngineRedlineHzSlider" Minimum="8" Maximum="50" Value="28" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblEngineThrottle" Style="{StaticResource Label}" Text="Throttle blend"/>
+                                                <local:HintMark Tip="How much off-throttle quiets the engine. Higher means more throttle-dependent."/>
+                                            </StackPanel>
+                                            <Slider x:Name="EngineThrottleSlider" Minimum="0" Maximum="1" Value="0.72" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblBoostGain" Style="{StaticResource Label}" Text="Boost extra"/>
+                                                <local:HintMark Tip="Extra right-motor layer while boost is active."/>
+                                            </StackPanel>
+                                            <Slider x:Name="BoostGainSlider" Minimum="0" Maximum="0.5" Value="0.18" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                    </UniformGrid>
+                                </StackPanel>
+                                <StackPanel x:Name="PanelRoad" Visibility="Collapsed">
+                                    <TextBlock Style="{StaticResource Eyebrow}" Text="ROAD"/>
+                                    <UniformGrid Columns="2">
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblRoadGain" Style="{StaticResource Label}" Text="Speed"/>
+                                                <local:HintMark Tip="Baseline road rumble from speed."/>
+                                            </StackPanel>
+                                            <Slider x:Name="RoadGainSlider" Minimum="0" Maximum="0.5" Value="0.14" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblRoadSurface" Style="{StaticResource Label}" Text="Surface"/>
+                                                <local:HintMark Tip="Per-side surface roughness from telemetry."/>
+                                            </StackPanel>
+                                            <Slider x:Name="RoadSurfaceSlider" Minimum="0" Maximum="1.2" Value="0.55" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblRoadStrip" Style="{StaticResource Label}" Text="Rumble strip"/>
+                                                <local:HintMark Tip="Kerbs and rumble strips, panned to the side that is on them."/>
+                                            </StackPanel>
+                                            <Slider x:Name="RoadStripSlider" Minimum="0" Maximum="0.8" Value="0.35" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblRoadPuddle" Style="{StaticResource Label}" Text="Puddle"/>
+                                                <local:HintMark Tip="Wet-patch shake, panned left or right."/>
+                                            </StackPanel>
+                                            <Slider x:Name="RoadPuddleSlider" Minimum="0" Maximum="0.8" Value="0.40" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                    </UniformGrid>
+                                </StackPanel>
+                                <StackPanel x:Name="PanelSlip" Visibility="Collapsed">
+                                    <TextBlock Style="{StaticResource Eyebrow}" Text="TIRES"/>
+                                    <UniformGrid Columns="2">
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblSlipGain" Style="{StaticResource Label}" Text="Slip"/>
+                                                <local:HintMark Tip="How hard tire slip shakes the matching side."/>
+                                            </StackPanel>
+                                            <Slider x:Name="SlipGainSlider" Minimum="0" Maximum="0.8" Value="0.28" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblWheelspin" Style="{StaticResource Label}" Text="Wheelspin"/>
+                                                <local:HintMark Tip="Drive-wheel spin on throttle, on top of slip."/>
+                                            </StackPanel>
+                                            <Slider x:Name="WheelspinSlider" Minimum="0" Maximum="0.6" Value="0.18" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                    </UniformGrid>
+                                </StackPanel>
+                                <StackPanel x:Name="PanelDrift" Visibility="Collapsed">
+                                    <TextBlock Style="{StaticResource Eyebrow}" Text="DRIFT"/>
+                                    <UniformGrid Columns="2">
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblDriftGain" Style="{StaticResource Label}" Text="Drift"/>
+                                                <local:HintMark Tip="Rear-slip rumble once you are past the start point."/>
+                                            </StackPanel>
+                                            <Slider x:Name="DriftGainSlider" Minimum="0" Maximum="0.9" Value="0.32" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblDriftThreshold" Style="{StaticResource Label}" Text="Start"/>
+                                                <local:HintMark Tip="How much rear slip is needed before drift rumble begins."/>
+                                            </StackPanel>
+                                            <Slider x:Name="DriftThresholdSlider" Minimum="0.05" Maximum="0.6" Value="0.22" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblHandbrakeGain" Style="{StaticResource Label}" Text="Handbrake"/>
+                                                <local:HintMark Tip="Handbrake grab strength. Scales up with speed."/>
+                                            </StackPanel>
+                                            <Slider x:Name="HandbrakeGainSlider" Minimum="0" Maximum="0.8" Value="0.38" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                    </UniformGrid>
+                                </StackPanel>
+                                <StackPanel x:Name="PanelAbs" Visibility="Collapsed">
+                                    <TextBlock Style="{StaticResource Eyebrow}" Text="ABS"/>
+                                    <UniformGrid Columns="2">
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblAbsGain" Style="{StaticResource Label}" Text="Gain"/>
+                                                <local:HintMark Tip="How hard each ABS tick hits."/>
+                                            </StackPanel>
+                                            <Slider x:Name="AbsGainSlider" Minimum="0" Maximum="0.9" Value="0.42" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblAbsHz" Style="{StaticResource Label}" Text="Pulse"/>
+                                                <local:HintMark Tip="How fast the ABS ticks."/>
+                                            </StackPanel>
+                                            <Slider x:Name="AbsHzSlider" Minimum="4" Maximum="24" Value="14" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblAbsWidth" Style="{StaticResource Label}" Text="Width"/>
+                                                <local:HintMark Tip="How long each ABS tick stays on."/>
+                                            </StackPanel>
+                                            <Slider x:Name="AbsWidthSlider" Minimum="0.15" Maximum="0.85" Value="0.42" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                    </UniformGrid>
+                                </StackPanel>
+                                <StackPanel x:Name="PanelTraction" Visibility="Collapsed">
+                                    <TextBlock Style="{StaticResource Eyebrow}" Text="TRACTION"/>
+                                    <UniformGrid Columns="2">
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblTractionGain" Style="{StaticResource Label}" Text="Gain"/>
+                                                <local:HintMark Tip="How hard each traction-control tick hits."/>
+                                            </StackPanel>
+                                            <Slider x:Name="TractionGainSlider" Minimum="0" Maximum="0.8" Value="0.30" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblTractionHz" Style="{StaticResource Label}" Text="Pulse"/>
+                                                <local:HintMark Tip="How fast traction control ticks."/>
+                                            </StackPanel>
+                                            <Slider x:Name="TractionHzSlider" Minimum="3" Maximum="20" Value="9" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                    </UniformGrid>
+                                </StackPanel>
+                                <StackPanel x:Name="PanelGear" Visibility="Collapsed">
+                                    <TextBlock Style="{StaticResource Eyebrow}" Text="GEAR"/>
+                                    <UniformGrid Columns="2">
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblGearGain" Style="{StaticResource Label}" Text="Kick"/>
+                                                <local:HintMark Tip="How hard the shift hit is."/>
+                                            </StackPanel>
+                                            <Slider x:Name="GearGainSlider" Minimum="0" Maximum="1.0" Value="0.62" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblGearMs" Style="{StaticResource Label}" Text="Duration"/>
+                                                <local:HintMark Tip="How long the shift kick lasts."/>
+                                            </StackPanel>
+                                            <Slider x:Name="GearMsSlider" Minimum="50" Maximum="280" Value="160" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                    </UniformGrid>
+                                </StackPanel>
+                                <StackPanel x:Name="PanelImpact" Visibility="Collapsed">
+                                    <TextBlock Style="{StaticResource Eyebrow}" Text="IMPACT"/>
+                                    <UniformGrid Columns="2">
+                                        <StackPanel Margin="0,0,12,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblImpactGain" Style="{StaticResource Label}" Text="Gain"/>
+                                                <local:HintMark Tip="Collision and suspension-thud strength."/>
+                                            </StackPanel>
+                                            <Slider x:Name="ImpactGainSlider" Minimum="0" Maximum="1.2" Value="0.85" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="LblImpactDecay" Style="{StaticResource Label}" Text="Decay"/>
+                                                <local:HintMark Tip="How quickly the hit fades after impact."/>
+                                            </StackPanel>
+                                            <Slider x:Name="ImpactDecaySlider" Minimum="80" Maximum="400" Value="220" ValueChanged="Curve_Changed"/>
+                                        </StackPanel>
+                                    </UniformGrid>
+                                </StackPanel>
+                                <StackPanel x:Name="PanelGForce" Visibility="Collapsed">
+                                    <TextBlock Style="{StaticResource Eyebrow}" Text="G-FORCE"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock x:Name="LblGForceGain" Style="{StaticResource Label}" Text="Gain"/>
+                                        <local:HintMark Tip="How much brake, throttle, and cornering load you feel."/>
+                                    </StackPanel>
+                                    <Slider x:Name="GForceGainSlider" Minimum="0" Maximum="0.4" Value="0.10" ValueChanged="Curve_Changed"/>
+                                </StackPanel>
+                            </Grid>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </DockPanel>
+</Window>
