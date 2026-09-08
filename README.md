@@ -21,6 +21,10 @@ You do not need Visual Studio or the .NET SDK.
 
 Windows may warn on an unsigned exe the first time. Choose **More info → Run anyway** if SmartScreen blocks it.
 
+## Auto update
+
+On by default. When the app starts it checks GitHub Releases. If a newer zip is out, you can install it. Your `config.json` and profiles stay. Uncheck **Auto update** in the header if you do not want that.
+
 ## What it does
 
 While you drive, the pad keeps a low baseline and changes with the car:
@@ -83,7 +87,7 @@ Impulse triggers (Elite and similar) are not driven. This app only uses the two 
 
 ## Left motor
 
-Most XInput pads have a heavier left motor. **LEFT MOTOR** in the footer (default 85%) trims that so a centered mix feels even. Set it to 100% if you want the raw left punch.
+Most XInput pads have a heavier left motor. **LEFT MOTOR** in the footer (default 75%) trims that so a centered mix feels even. Set it to 100% if you want the raw left punch.
 
 ## Tune
 

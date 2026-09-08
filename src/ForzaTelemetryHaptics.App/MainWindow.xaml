@@ -21,6 +21,10 @@
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource Muted}" Text="FORZA HORIZON 6"/>
                     <TextBlock FontSize="18" FontWeight="SemiBold" Text="Telemetry Haptics"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <CheckBox x:Name="AutoUpdateBox" Content="Auto update" Margin="0" VerticalAlignment="Center" Checked="AutoUpdate_Changed" Unchecked="AutoUpdate_Changed"/>
+                        <local:HintMark Tip="On launch, check GitHub Releases. If a newer zip is out, you can install it. Your config and profiles stay."/>
+                    </StackPanel>
                 </StackPanel>
                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal">
@@ -64,13 +68,13 @@
                 </StackPanel>
                 <StackPanel Grid.Column="2">
                     <DockPanel>
-                        <TextBlock x:Name="MaxRumbleText" Style="{StaticResource Value}" DockPanel.Dock="Right" Text="35%"/>
+                        <TextBlock x:Name="MaxRumbleText" Style="{StaticResource Value}" DockPanel.Dock="Right" Text="100%"/>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Style="{StaticResource Eyebrow}" Text="MAX RUMBLE" Margin="0"/>
-                            <local:HintMark Tip="Hard cap on both motors. Safety limit so the pad cannot run at full strength."/>
+                            <local:HintMark Tip="Hard cap on both motors. Leave at 100% unless the pad feels too strong."/>
                         </StackPanel>
                     </DockPanel>
-                    <Slider x:Name="MaxRumbleSlider" Minimum="0.05" Maximum="1.0" Value="0.35" Margin="0,6,0,0" ValueChanged="MaxRumble_Changed"/>
+                    <Slider x:Name="MaxRumbleSlider" Minimum="0.05" Maximum="1.0" Value="1.0" Margin="0,6,0,0" ValueChanged="MaxRumble_Changed"/>
                 </StackPanel>
                 <StackPanel Grid.Column="4">
                     <DockPanel>
@@ -84,13 +88,13 @@
                 </StackPanel>
                 <StackPanel Grid.Column="6">
                     <DockPanel>
-                        <TextBlock x:Name="LeftMotorScaleText" Style="{StaticResource Value}" DockPanel.Dock="Right" Text="85%"/>
+                        <TextBlock x:Name="LeftMotorScaleText" Style="{StaticResource Value}" DockPanel.Dock="Right" Text="75%"/>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Style="{StaticResource Eyebrow}" Text="LEFT MOTOR" Margin="0"/>
                             <local:HintMark Tip="Ducks the heavier left motor. XInput pads like the 8BitDo 2C hit harder on the left for the same value."/>
                         </StackPanel>
                     </DockPanel>
-                    <Slider x:Name="LeftMotorScaleSlider" Minimum="0.55" Maximum="1.0" Value="0.85" Margin="0,6,0,0" ValueChanged="LeftMotorScale_Changed"/>
+                    <Slider x:Name="LeftMotorScaleSlider" Minimum="0.55" Maximum="1.0" Value="0.75" Margin="0,6,0,0" ValueChanged="LeftMotorScale_Changed"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -355,7 +359,7 @@
                                                 <TextBlock x:Name="LblEngineRedlineHz" Style="{StaticResource Label}" Text="Redline texture"/>
                                                 <local:HintMark Tip="Pulse speed of that texture at redline."/>
                                             </StackPanel>
-                                            <Slider x:Name="EngineRedlineHzSlider" Minimum="8" Maximum="50" Value="28" ValueChanged="Curve_Changed"/>
+                                            <Slider x:Name="EngineRedlineHzSlider" Minimum="8" Maximum="50" Value="42.6" ValueChanged="Curve_Changed"/>
                                         </StackPanel>
                                         <StackPanel Margin="0,0,12,0">
                                             <StackPanel Orientation="Horizontal">
@@ -369,7 +373,7 @@
                                                 <TextBlock x:Name="LblBoostGain" Style="{StaticResource Label}" Text="Boost extra"/>
                                                 <local:HintMark Tip="Extra right-motor layer while boost is active."/>
                                             </StackPanel>
-                                            <Slider x:Name="BoostGainSlider" Minimum="0" Maximum="0.5" Value="0.18" ValueChanged="Curve_Changed"/>
+                                            <Slider x:Name="BoostGainSlider" Minimum="0" Maximum="0.5" Value="0.35" ValueChanged="Curve_Changed"/>
                                         </StackPanel>
                                     </UniformGrid>
                                 </StackPanel>
@@ -381,7 +385,7 @@
                                                 <TextBlock x:Name="LblRoadGain" Style="{StaticResource Label}" Text="Speed"/>
                                                 <local:HintMark Tip="Baseline road rumble from speed."/>
                                             </StackPanel>
-                                            <Slider x:Name="RoadGainSlider" Minimum="0" Maximum="0.5" Value="0.14" ValueChanged="Curve_Changed"/>
+                                            <Slider x:Name="RoadGainSlider" Minimum="0" Maximum="0.5" Value="0.11" ValueChanged="Curve_Changed"/>
                                         </StackPanel>
                                         <StackPanel>
                                             <StackPanel Orientation="Horizontal">
@@ -414,14 +418,14 @@
                                                 <TextBlock x:Name="LblSlipGain" Style="{StaticResource Label}" Text="Slip"/>
                                                 <local:HintMark Tip="How hard tire slip shakes the matching side."/>
                                             </StackPanel>
-                                            <Slider x:Name="SlipGainSlider" Minimum="0" Maximum="0.8" Value="0.28" ValueChanged="Curve_Changed"/>
+                                            <Slider x:Name="SlipGainSlider" Minimum="0" Maximum="0.8" Value="0.33" ValueChanged="Curve_Changed"/>
                                         </StackPanel>
                                         <StackPanel>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock x:Name="LblWheelspin" Style="{StaticResource Label}" Text="Wheelspin"/>
                                                 <local:HintMark Tip="Drive-wheel spin on throttle, on top of slip."/>
                                             </StackPanel>
-                                            <Slider x:Name="WheelspinSlider" Minimum="0" Maximum="0.6" Value="0.18" ValueChanged="Curve_Changed"/>
+                                            <Slider x:Name="WheelspinSlider" Minimum="0" Maximum="0.6" Value="0.27" ValueChanged="Curve_Changed"/>
                                         </StackPanel>
                                     </UniformGrid>
                                 </StackPanel>
@@ -504,14 +508,14 @@
                                                 <TextBlock x:Name="LblGearGain" Style="{StaticResource Label}" Text="Kick"/>
                                                 <local:HintMark Tip="How hard the shift hit is."/>
                                             </StackPanel>
-                                            <Slider x:Name="GearGainSlider" Minimum="0" Maximum="1.0" Value="0.62" ValueChanged="Curve_Changed"/>
+                                            <Slider x:Name="GearGainSlider" Minimum="0" Maximum="1.0" Value="0.38" ValueChanged="Curve_Changed"/>
                                         </StackPanel>
                                         <StackPanel>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock x:Name="LblGearMs" Style="{StaticResource Label}" Text="Duration"/>
                                                 <local:HintMark Tip="How long the shift kick lasts."/>
                                             </StackPanel>
-                                            <Slider x:Name="GearMsSlider" Minimum="50" Maximum="280" Value="160" ValueChanged="Curve_Changed"/>
+                                            <Slider x:Name="GearMsSlider" Minimum="50" Maximum="280" Value="90" ValueChanged="Curve_Changed"/>
                                         </StackPanel>
                                     </UniformGrid>
                                 </StackPanel>
@@ -523,14 +527,14 @@
                                                 <TextBlock x:Name="LblImpactGain" Style="{StaticResource Label}" Text="Gain"/>
                                                 <local:HintMark Tip="Collision and suspension-thud strength."/>
                                             </StackPanel>
-                                            <Slider x:Name="ImpactGainSlider" Minimum="0" Maximum="1.2" Value="0.85" ValueChanged="Curve_Changed"/>
+                                            <Slider x:Name="ImpactGainSlider" Minimum="0" Maximum="1.2" Value="1.2" ValueChanged="Curve_Changed"/>
                                         </StackPanel>
                                         <StackPanel>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock x:Name="LblImpactDecay" Style="{StaticResource Label}" Text="Decay"/>
                                                 <local:HintMark Tip="How quickly the hit fades after impact."/>
                                             </StackPanel>
-                                            <Slider x:Name="ImpactDecaySlider" Minimum="80" Maximum="400" Value="220" ValueChanged="Curve_Changed"/>
+                                            <Slider x:Name="ImpactDecaySlider" Minimum="80" Maximum="400" Value="119" ValueChanged="Curve_Changed"/>
                                         </StackPanel>
                                     </UniformGrid>
                                 </StackPanel>

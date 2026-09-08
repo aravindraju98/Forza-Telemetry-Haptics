@@ -4,10 +4,13 @@
   "ActiveProfile": "Default",
   "ControllerIndex": -1,
   "HapticRateHz": 100,
+  "CheckForUpdates": true,
   "Haptics": {
     "GlobalGain": 1.0,
-    "MaximumRumble": 0.35,
+    "MaximumRumble": 1.0,
     "MinimumThreshold": 0.012,
+    "LeftMotorScale": 0.75,
+    "RightMotorScale": 1.0,
     "SmoothingSeconds": 0.08,
     "AttackSeconds": 0.04,
     "ReleaseSeconds": 0.16,
@@ -18,13 +21,17 @@
     "EngineExponent": 1.6,
     "EngineModulation": 0.18,
     "EngineModulationHz": 12.0,
-    "EngineRedlineModHz": 28.0,
-    "RoadGain": 0.14,
+    "EngineRedlineModHz": 42.6,
+    "EngineThrottleBlend": 0.72,
+    "BoostGain": 0.35,
+    "RoadGain": 0.11,
     "RoadSurfaceGain": 0.55,
     "RoadRumbleStripGain": 0.35,
+    "RoadPuddleGain": 0.40,
     "MaxSpeedKmh": 300.0,
-    "SlipGain": 0.28,
-    "WheelspinGain": 0.18,
+    "HandbrakeGain": 0.38,
+    "SlipGain": 0.33,
+    "WheelspinGain": 0.27,
     "DriftGain": 0.32,
     "DriftThreshold": 0.22,
     "AbsGain": 0.42,
@@ -32,14 +39,90 @@
     "AbsPulseWidth": 0.42,
     "TractionGain": 0.30,
     "TractionFrequencyHz": 9.0,
-    "GearShiftGain": 0.62,
-    "GearShiftDurationMs": 160.0,
+    "GearShiftGain": 0.38,
+    "GearShiftDurationMs": 90.0,
     "GearShiftDownshiftScale": 1.15,
-    "ImpactGain": 0.85,
-    "ImpactAttackMs": 80.0,
-    "ImpactDecayMs": 220.0,
+    "ImpactGain": 1.2,
+    "ImpactAttackMs": 12.0,
+    "ImpactDecayMs": 119.0,
     "ImpactPriority": 0.85,
+    "EngineEnabled": true,
+    "BoostEnabled": true,
+    "RoadEnabled": true,
+    "SlipEnabled": true,
+    "DriftEnabled": true,
+    "AbsEnabled": true,
+    "TractionEnabled": true,
+    "HandbrakeEnabled": true,
+    "GearEnabled": true,
+    "ImpactEnabled": true,
     "GForceEnabled": true,
-    "GForceGain": 0.10
+    "GForceGain": 0.10,
+    "EngineCurve": {
+      "Points": [
+        { "X": 0, "Y": 0 },
+        { "X": 0.25, "Y": 0.108818814 },
+        { "X": 0.5, "Y": 0.32987696 },
+        { "X": 0.75, "Y": 0.63109976 },
+        { "X": 1, "Y": 1 }
+      ]
+    },
+    "RoadCurve": {
+      "Points": [
+        { "X": 0, "Y": 0 },
+        { "X": 0.25, "Y": 0.35355338 },
+        { "X": 0.5, "Y": 0.59460354 },
+        { "X": 0.75, "Y": 0.80592746 },
+        { "X": 1, "Y": 1 }
+      ]
+    },
+    "SlipCurve": {
+      "Points": [
+        { "X": 0, "Y": 0 },
+        { "X": 0.4403, "Y": 0.3982 },
+        { "X": 1, "Y": 1 }
+      ]
+    },
+    "DriftCurve": {
+      "Points": [
+        { "X": 0, "Y": 0 },
+        { "X": 0.22, "Y": 0 },
+        { "X": 0.4639, "Y": 0.8611 },
+        { "X": 1, "Y": 1 }
+      ]
+    },
+    "AbsCurve": {
+      "Points": [
+        { "X": 0, "Y": 0 },
+        { "X": 0.3458, "Y": 0.7144 },
+        { "X": 1, "Y": 1 }
+      ]
+    },
+    "TractionCurve": {
+      "Points": [
+        { "X": 0, "Y": 0 },
+        { "X": 1, "Y": 1 }
+      ]
+    },
+    "GearCurve": {
+      "Points": [
+        { "X": 0, "Y": 0 },
+        { "X": 0.3812, "Y": 1 },
+        { "X": 1, "Y": 1 }
+      ]
+    },
+    "ImpactCurve": {
+      "Points": [
+        { "X": 0, "Y": 0 },
+        { "X": 0.02, "Y": 1 },
+        { "X": 1, "Y": 1 }
+      ]
+    },
+    "GForceCurve": {
+      "Points": [
+        { "X": 0, "Y": 0 },
+        { "X": 1, "Y": 1 }
+      ]
+    }
   }
 }

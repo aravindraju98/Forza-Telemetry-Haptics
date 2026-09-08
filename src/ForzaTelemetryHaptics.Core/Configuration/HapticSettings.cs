@@ -5,10 +5,10 @@ namespace ForzaTelemetryHaptics.Configuration;
 public sealed class HapticSettings
 {
     public float GlobalGain { get; set; } = 1.0f;
-    public float MaximumRumble { get; set; } = 0.35f;
+    public float MaximumRumble { get; set; } = 1.0f;
     public float MinimumThreshold { get; set; } = 0.012f;
     /// <summary>Trims the stronger grip motor. XInput pads (8BitDo 2C included) use a heavier left motor.</summary>
-    public float LeftMotorScale { get; set; } = 0.85f;
+    public float LeftMotorScale { get; set; } = 0.75f;
     public float RightMotorScale { get; set; } = 1.0f;
 
     public float SmoothingSeconds { get; set; } = 0.08f;
@@ -22,11 +22,11 @@ public sealed class HapticSettings
     public float EngineExponent { get; set; } = 1.6f;
     public float EngineModulation { get; set; } = 0.18f;
     public float EngineModulationHz { get; set; } = 12f;
-    public float EngineRedlineModHz { get; set; } = 28f;
+    public float EngineRedlineModHz { get; set; } = 42.6f;
     public float EngineThrottleBlend { get; set; } = 0.72f;
-    public float BoostGain { get; set; } = 0.18f;
+    public float BoostGain { get; set; } = 0.35f;
 
-    public float RoadGain { get; set; } = 0.14f;
+    public float RoadGain { get; set; } = 0.11f;
     public float RoadSurfaceGain { get; set; } = 0.55f;
     public float RoadRumbleStripGain { get; set; } = 0.35f;
     public float RoadPuddleGain { get; set; } = 0.40f;
@@ -34,8 +34,8 @@ public sealed class HapticSettings
 
     public float HandbrakeGain { get; set; } = 0.38f;
 
-    public float SlipGain { get; set; } = 0.28f;
-    public float WheelspinGain { get; set; } = 0.18f;
+    public float SlipGain { get; set; } = 0.33f;
+    public float WheelspinGain { get; set; } = 0.27f;
 
     public float DriftGain { get; set; } = 0.32f;
     public float DriftThreshold { get; set; } = 0.22f;
@@ -47,13 +47,13 @@ public sealed class HapticSettings
     public float TractionGain { get; set; } = 0.30f;
     public float TractionFrequencyHz { get; set; } = 9f;
 
-    public float GearShiftGain { get; set; } = 0.62f;
-    public float GearShiftDurationMs { get; set; } = 160f;
+    public float GearShiftGain { get; set; } = 0.38f;
+    public float GearShiftDurationMs { get; set; } = 90f;
     public float GearShiftDownshiftScale { get; set; } = 1.15f;
 
-    public float ImpactGain { get; set; } = 0.85f;
-    public float ImpactAttackMs { get; set; } = 80f;
-    public float ImpactDecayMs { get; set; } = 220f;
+    public float ImpactGain { get; set; } = 1.2f;
+    public float ImpactAttackMs { get; set; } = 12f;
+    public float ImpactDecayMs { get; set; } = 119f;
     public float ImpactPriority { get; set; } = 0.85f;
 
     public bool EngineEnabled { get; set; } = true;
@@ -71,12 +71,17 @@ public sealed class HapticSettings
 
     public ResponseCurve EngineCurve { get; set; } = ResponseCurve.Power(1.6f);
     public ResponseCurve RoadCurve { get; set; } = ResponseCurve.Power(0.75f);
-    public ResponseCurve SlipCurve { get; set; } = ResponseCurve.Linear();
-    public ResponseCurve DriftCurve { get; set; } = ResponseCurve.Delayed(0.22f);
-    public ResponseCurve AbsCurve { get; set; } = ResponseCurve.Linear();
+    public ResponseCurve SlipCurve { get; set; } = ResponseCurve.FromPoints(
+        new(0f, 0f), new(0.4403f, 0.3982f), new(1f, 1f));
+    public ResponseCurve DriftCurve { get; set; } = ResponseCurve.FromPoints(
+        new(0f, 0f), new(0.22f, 0f), new(0.4639f, 0.8611f), new(1f, 1f));
+    public ResponseCurve AbsCurve { get; set; } = ResponseCurve.FromPoints(
+        new(0f, 0f), new(0.3458f, 0.7144f), new(1f, 1f));
     public ResponseCurve TractionCurve { get; set; } = ResponseCurve.Linear();
-    public ResponseCurve GearCurve { get; set; } = ResponseCurve.Linear();
-    public ResponseCurve ImpactCurve { get; set; } = ResponseCurve.Linear();
+    public ResponseCurve GearCurve { get; set; } = ResponseCurve.FromPoints(
+        new(0f, 0f), new(0.3812f, 1f), new(1f, 1f));
+    public ResponseCurve ImpactCurve { get; set; } = ResponseCurve.FromPoints(
+        new(0f, 0f), new(0.02f, 1f), new(1f, 1f));
     public ResponseCurve GForceCurve { get; set; } = ResponseCurve.Linear();
 
     public ResponseCurve CurveFor(string aspect) => aspect switch

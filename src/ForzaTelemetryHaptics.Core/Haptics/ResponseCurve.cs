@@ -27,6 +27,9 @@ public sealed class ResponseCurve
 
     public static ResponseCurve Linear() => new() { Points = LinearPoints() };
 
+    public static ResponseCurve FromPoints(params CurvePoint[] points) =>
+        new() { Points = points.Select(p => new CurvePoint(p.X, p.Y)).ToList() };
+
     public static ResponseCurve Power(float exponent)
     {
         var exp = Math.Max(exponent, 0.2f);

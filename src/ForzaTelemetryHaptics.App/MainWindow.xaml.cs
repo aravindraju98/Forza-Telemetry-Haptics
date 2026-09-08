@@ -48,9 +48,11 @@ public partial class MainWindow : Window
         };
         _timer.Tick += (_, _) => RefreshUi();
         _timer.Start();
+        AutoUpdateBox.IsChecked = _runtime.Config.CheckForUpdates;
         _ready = true;
         UpdateSafetyLabels();
         UpdateCurveLabels();
+        Loaded += (_, _) => _ = CheckForUpdateAsync();
     }
 
     private void RefreshUi()
@@ -163,6 +165,53 @@ public partial class MainWindow : Window
         _runtime.Config.Haptics.GlobalGain = (float)GlobalGainSlider.Value;
         UpdateSafetyLabels();
         ScheduleSave();
+    }
+
+    private void AutoUpdate_Changed(object sender, RoutedEventArgs e)
+    {
+        if (!_ready) return;
+        _runtime.Config.CheckForUpdates = AutoUpdateBox.IsChecked == true;
+        ScheduleSave();
+        if (_runtime.Config.CheckForUpdates)
+        {
+            _ = CheckForUpdateAsync();
+        }
+    }
+
+    private async Task CheckForUpdateAsync()
+    {
+        if (!_runtime.Config.CheckForUpdates)
+        {
+            return;
+        }
+
+        try
+        {
+            var offer = await UpdateService.CheckAsync();
+            if (offer is null)
+            {
+                return;
+            }
+
+            var go = MessageBox.Show(
+                this,
+                $"Version {offer.Tag} is available (you have {UpdateService.CurrentVersion}).\n\nInstall it now? Your config and profiles stay.",
+                "Update",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.None);
+            if (go != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            await UpdateService.ApplyAsync(offer, AppContext.BaseDirectory);
+            ForceSilence();
+            Close();
+        }
+        catch
+        {
+            // offline or GitHub unreachable
+        }
     }
 
     private void LeftMotorScale_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
