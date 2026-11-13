@@ -4,7 +4,7 @@
   "ActiveProfile": "Default",
   "ControllerIndex": -1,
   "HapticRateHz": 100,
-  "CheckForUpdates": true,
+  "CheckForUpdates": false,
   "Haptics": {
     "GlobalGain": 1.0,
     "MaximumRumble": 1.0,

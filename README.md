@@ -23,7 +23,7 @@ Windows may warn on an unsigned exe the first time. Choose **More info → Run a
 
 ## Auto update
 
-On by default. When the app starts it checks GitHub Releases. If a newer zip is out, you can install it. Your `config.json` and profiles stay. Uncheck **Auto update** in the header if you do not want that.
+Off by default. Check **Auto update** in the header to turn it on. When the app starts it then checks GitHub Releases, and if a newer zip is out, you can install it. Your `config.json` and profiles stay.
 
 ## What it does
 
@@ -148,6 +148,6 @@ How the mixer is put together: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## License
 
-MIT. Notices: [docs/THIRD_PARTY_NOTICES.md](docs/THIRD_PARTY_NOTICES.md) and [LICENSE](LICENSE).
+MIT. Privacy: [PRIVACY.md](PRIVACY.md). Notices: [docs/THIRD_PARTY_NOTICES.md](docs/THIRD_PARTY_NOTICES.md) and [LICENSE](LICENSE).
 
 No Forza assets or packet captures are included. Use official Data Out only.

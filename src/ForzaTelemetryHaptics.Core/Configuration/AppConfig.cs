@@ -7,6 +7,6 @@ public sealed class AppConfig
     public string ActiveProfile { get; set; } = "Default";
     public int ControllerIndex { get; set; } = -1;
     public int HapticRateHz { get; set; } = 100;
-    public bool CheckForUpdates { get; set; } = true;
+    public bool CheckForUpdates { get; set; } = false;
     public HapticSettings Haptics { get; set; } = new();
 }
